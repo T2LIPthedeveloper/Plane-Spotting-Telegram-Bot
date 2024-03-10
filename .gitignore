@@ -1,0 +1,10 @@
+.conda
+
+# IGNORE DATASET
+data
+data/**/*
+files.zip
+files
+files/**/*
+
+
