@@ -7,4 +7,9 @@ files.zip
 files
 files/**/*
 
+.env
+
+venv
+venv/**/*
+
 
