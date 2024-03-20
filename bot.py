@@ -179,7 +179,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 def process_output(output_data):
   # Return the plane model and type if model is above 60% confident
-  if max(output_data) < 0.6:
+  if max(output_data) < 0.7:
     return "I'm not confident enough to predict the model of the plane. These are the top possibilities:\n" + "\n".join([f"{idx_to_names[i]}: {output_data[i]}" for i in np.argsort(output_data)[-5:][::-1]if output_data[i] > 0.1])
   else:
     idx = np.argmax(output_data)
@@ -230,6 +230,9 @@ async def process(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   res = process_output(output_data)
   # delete the image
   os.remove(image_path)
+
+  # remove queue
+  del result_queue
 
   # send the result
   await update.message.reply_text(res)
