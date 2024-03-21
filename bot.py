@@ -132,7 +132,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def help_command(update: Update,
                        context: ContextTypes.DEFAULT_TYPE) -> None:
   """Send a message when the command /help is issued."""
-  await update.message.reply_text("Help!")
+  await update.message.reply_text("""You can upload an image of a plane to predict the model and type. At the moment, I can only predict the names and types of commercial airliners, but not the most recent ones.
+""")
 
 async def process_image(image_path):
   try:
@@ -175,6 +176,26 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     "Oops! I need an image to predict the model and type of the plane."
   ]
 
+  # now some generic replies like hi, hello and so on.
+  generics = {
+    "hi": ["Hello!", "Hi!", "Hey!", "Hi there!"],
+    "hello": ["Hello!", "Hi!", "Hey!", "Hi there!"],
+    "hey": ["Hello!", "Hi!", "Hey!", "Hi there!"],
+    "how are you": ["I'm good, thanks!", "I'm doing great, thanks!", "I'm fine, thanks!", "I'm doing well, thanks!"],
+    "bye": ["Goodbye!", "Bye!", "See you later!", "Take care!"],
+    "goodbye": ["Goodbye!", "Bye!", "See you later!", "Take care!"],
+    "see you": ["Goodbye!", "Bye!", "See you later!", "Take care!"]
+  }
+
+  if update.message.text:
+    text = update.message.text.lower()
+    # check if any text within the text matches the generics
+    for key in generics:
+      if key in text:
+        await update.message.reply_text(generics[key][np.random.randint(0, len(generics[key]))])
+        return
+    # if no match, reply with a generic message
+
   await update.message.reply_text(replies[np.random.randint(0, len(replies))])
 
 def process_output(output_data):
@@ -185,7 +206,6 @@ def process_output(output_data):
     idx = np.argmax(output_data)
     return "It's most likely a " + idx_to_names[idx] + "."
 
-# Replace def stylize with def process, meant to process image and return plane model and type
 async def process(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   # get the image and save it
   fid = update.message.photo[-1].file_id
