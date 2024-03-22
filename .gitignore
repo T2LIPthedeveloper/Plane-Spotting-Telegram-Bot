@@ -7,9 +7,12 @@ files.zip
 files
 files/**/*
 
+# Secrets
 .env
 
 venv
 venv/**/*
 
+# Models
+*.tflite
 
