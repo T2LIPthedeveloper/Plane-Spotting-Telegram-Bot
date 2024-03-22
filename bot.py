@@ -126,7 +126,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   user = update.effective_user
   await update.message.reply_html(
       rf"Hi {user.mention_html()}!",
-      reply_markup=ForceReply(selective=True),
   )
 
 async def help_command(update: Update,
@@ -199,8 +198,8 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
   await update.message.reply_text(replies[np.random.randint(0, len(replies))])
 
 def process_output(output_data):
-  # Return the plane model and type if model is above 60% confident
-  if max(output_data) < 0.7:
+  # Return the plane model and type if model is above 60% confident, or if the difference between most confident and second most confident model is above 30%
+  if max(output_data) < 0.7 or (max(output_data) - sorted(output_data)[-2]) < 0.3:
     return "I'm not confident enough to predict the model of the plane. These are the top possibilities:\n" + "\n".join([f"{idx_to_names[i]}: {output_data[i]}" for i in np.argsort(output_data)[-5:][::-1]if output_data[i] > 0.1])
   else:
     idx = np.argmax(output_data)
